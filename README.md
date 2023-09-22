@@ -40,9 +40,9 @@ To use ChatBotX in your project, follow these steps:
 
 Below are some screenshots of the project:
 
-- ![Screenshot 1](assests/Screenshot%202023-09-22%20200726.png)
+- ![Screenshot 5](assests/Screenshot%202023-09-22%20201434.png)
 - ![Screenshot 2](assests/Screenshot%202023-09-22%20201543.png)
+- ![Screenshot 1](assests/Screenshot%202023-09-22%20200726.png)
 - ![Screenshot 3](assests/Screenshot%202023-09-22%20200847.png)
 - ![Screenshot 4](assests/Screenshot%202023-09-22%20202009.png)
-- ![Screenshot 5](assests/Screenshot%202023-09-22%20201434.png)
 
