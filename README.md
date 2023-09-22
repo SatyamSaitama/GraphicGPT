@@ -30,7 +30,7 @@ ChatBotX is a versatile chatbot that can create HTML content, generate charts, d
 
 To use ChatBotX in your project, follow these steps:
 
-1. Clone this repository: `git clone https://github.com/yourusername/ChatBotX.git`
+1. Clone this repository: `git clone https://github.com/SatyamSaitama/GraphicGPT.git`
 
 2. Install dependencies: `pip install requirements.txt`
 
