@@ -1,0 +1,183 @@
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css' rel='stylesheet'>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+{% extends "bootstrap/base.html" %}
+
+{% block content %}
+<style>
+  .chat-container {
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .chat-messages {
+    overflow-y: auto;
+    flex-grow: 1;
+    margin-bottom: 1rem;
+  }
+
+  .typing-animation {
+    display: inline-block;
+    margin-left: 5px;
+  }
+
+  .typing-animation span {
+    display: inline-block;
+    margin-bottom: 3px;
+    background-color: #333;
+    border-radius: 50%;
+    width: 6px;
+    height: 6px;
+    animation: typing 1s infinite;
+  }
+
+  .typing-animation span:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .typing-animation span:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes typing {
+    0% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+    100% {
+      transform: translateY(0);
+    }
+    .input-group-append {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+}
+
+</style>
+
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <h1 class="text-center mb-4">ChatBotX</h1>
+      <div class="card shadow-lg chat-container">
+        <div class="card-body chat-messages">
+
+          <!-- Chat messages will be appended here -->
+        </div>
+        <div class="card-footer">
+          <form id="chat-form" method="post" action="/">
+            <div class="input-group">
+              <input type="search" class="form-control" placeholder="Ask a question" id="query" name ="query" style="width:680px">
+              <div class="input-group-append">
+                        <button class="btn" type="submit"><i class="fa fa-search"></i></button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const chatForm = document.getElementById('chat-form');
+  const queryInput = document.getElementById('query');
+  const chatMessages = document.querySelector('.chat-messages');
+
+  chatForm.addEventListener('submit', async function (event) {
+    event.preventDefault();
+    const query = queryInput.value.trim();
+    console.log(query);
+    if (!query) return;
+
+    // Display user's message
+    display('You asked:', query, 'user');
+
+    // Clear input and add typing animation
+    queryInput.value = '';
+    const typingAnimation = createTypingAnimation();
+    chatMessages.appendChild(typingAnimation);
+
+    // Get response from server
+    try {
+      const response = await getServerResponse(query);
+      chatMessages.removeChild(typingAnimation);
+      displayMessage('BOT:', response, 'assistant');
+    } catch (error) {
+      console.error(error);
+      chatMessages.removeChild(typingAnimation);
+      display('BOT:', 'Sorry, an error occurred while processing your request.', 'assistant');
+    }
+  });
+
+  async function getServerResponse(query) {
+    const response = await fetch('/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        query: query
+      })
+    });
+    const data = await response.json();
+    return data.response;
+  }
+
+  function displayMessage(title, message, sender) {
+    const messageCard = document.createElement('div');
+    messageCard.className = 'card mt-4';
+    messageCard.innerHTML = `
+      <div class="card-header">${title}</div>
+      <div class="card-body">  <iframe src="/main" width="670" height="300" title="Response"></iframe>
+</div>
+    `;
+    if (sender === 'assistant') {
+      messageCard.classList.add('text-end');
+    }
+    chatMessages.appendChild(messageCard);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+
+
+
+  function display(title, message, sender) {
+    const messageCard = document.createElement('div');
+    messageCard.className = 'card mt-4';
+    messageCard.innerHTML = `
+      <div class="card-header">${title}</div>
+      <div class="card-body"> ${message}</div>
+    `;
+    if (sender === 'assistant') {
+      messageCard.classList.add('text-end');
+    }
+    chatMessages.appendChild(messageCard);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function createTypingAnimation() {
+    const typingAnimation = document.createElement('div');
+    typingAnimation.className = 'typing-animation';
+    typingAnimation.innerHTML = `
+      <span></span>
+      <span></span>
+      <span></span>
+    `;
+    return typingAnimation;
+  }
+</script>
+
+{% endblock %}
